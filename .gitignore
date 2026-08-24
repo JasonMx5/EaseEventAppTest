@@ -1,0 +1,17 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio and VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local test and publish output
+TestResults/
+publish/

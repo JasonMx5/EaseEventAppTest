@@ -1,0 +1,81 @@
+@page "/register/{Id:int}"
+
+@using EventEaseApp.Models
+@using EventEaseApp.Services
+@using System.ComponentModel.DataAnnotations
+
+@inject EventRegistrationState RegistrationState
+
+<PageTitle>Register</PageTitle>
+
+@if (Event is null)
+{
+    <p>Event not found.</p>
+}
+else
+{
+    <h1>Register for @Event.Name</h1>
+
+    <div class="register-card">
+        <p><strong>Date:</strong> @Event.Date.ToString("MMMM dd, yyyy")</p>
+        <p><strong>Location:</strong> @Event.Location</p>
+
+        <EditForm Model="_registration" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="register-form">
+                <label>
+                    Full Name
+                    <InputText @bind-Value="_registration.FullName" placeholder="Enter your name" />
+                </label>
+
+                <ValidationMessage For="@(() => _registration.FullName)" />
+
+                <label>
+                    Email
+                    <InputText @bind-Value="_registration.Email" type="email" placeholder="Enter your email" />
+                </label>
+
+                <ValidationMessage For="@(() => _registration.Email)" />
+
+                <button type="submit">Submit Registration</button>
+            </div>
+        </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(_successMessage))
+        {
+            <p class="success-message">@_successMessage</p>
+        }
+    </div>
+
+    <div class="details-actions">
+        <NavLink class="btn btn-primary" href="@($"event/{Event.Id}")">Back to Details</NavLink>
+        <NavLink class="btn btn-secondary" href="">Back to Events</NavLink>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EventItem? Event => EventCatalog.GetEventById(Id);
+    private readonly RegistrationForm _registration = new();
+    private string _successMessage = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        RegistrationState.SelectEvent(Id);
+    }
+
+    private void HandleSubmit()
+    {
+        if (Event is null)
+        {
+            return;
+        }
+
+        RegistrationState.Register(Event, _registration);
+        _successMessage = $"Thanks, {_registration.FullName}! Your registration for {Event?.Name} has been received.";
+    }
+}

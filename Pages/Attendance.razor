@@ -1,0 +1,61 @@
+@page "/attendance"
+
+@using EventEaseApp.Models
+@using EventEaseApp.Services
+
+@inject EventRegistrationState RegistrationState
+@inject NavigationManager Navigation
+
+<PageTitle>Attendance</PageTitle>
+
+<h1>Attendance Tracker</h1>
+
+@if (RegistrationState.Registrations.Count > 0)
+{
+    <button class="close-session-button" @onclick="CloseSession">Close session</button>
+}
+
+@if (RegistrationState.Registrations.Count == 0)
+{
+    <p>No registrations have been submitted during this session.</p>
+    <NavLink class="btn btn-primary" href="">View Events</NavLink>
+}
+else
+{
+    <div class="session-summary">
+        <strong>Current session:</strong>
+        @RegistrationState.Registrations.Count registration(s) from
+        @RegistrationState.Registrations.Select(registration => registration.Email).Distinct().Count() user(s)
+    </div>
+
+    <div class="attendance-list">
+        @foreach (var registration in RegistrationState.Registrations)
+        {
+            <article class="attendance-row">
+                <div>
+                    <h2>@registration.EventName</h2>
+                    <p>@registration.FullName &middot; @registration.Email</p>
+                    <span class="status @(registration.Attended ? "status-attended" : "status-pending")">
+                        @(registration.Attended ? "Attended" : "Not attended")
+                    </span>
+                </div>
+                <button class="attendance-button" @onclick="() => ToggleAttendance(registration)">
+                    @(registration.Attended ? "Undo attendance" : "Mark attended")
+                </button>
+            </article>
+        }
+    </div>
+}
+
+@code {
+    private void ToggleAttendance(EventRegistration registration)
+    {
+        RegistrationState.SetAttendance(registration.Id, !registration.Attended);
+    }
+
+    private void CloseSession()
+    {
+        RegistrationState.CloseSession();
+        Navigation.NavigateTo("/");
+    }
+}

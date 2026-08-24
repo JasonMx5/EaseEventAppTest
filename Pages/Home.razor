@@ -1,0 +1,21 @@
+﻿@page "/"
+
+@using EventEaseApp.Models
+@using EventEaseApp.Services
+
+<PageTitle>Home</PageTitle>
+
+<h1>EventEase</h1>
+
+<div class="event-list">
+    @foreach (var eventItem in Events)
+    {
+        <div class="event-item">
+            <EventCard Event="eventItem" />
+        </div>
+    }
+</div>
+
+@code {
+        private List<EventItem> Events = EventCatalog.GetEvents().ToList();
+}
