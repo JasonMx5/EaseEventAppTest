@@ -166,6 +166,29 @@ The navigation menu uses CSS-backed SVG icons without adding another icon packag
 
 The external ASP.NET documentation link was replaced with an internal `/about` route. The About page identifies the application as educational sample work for a Coursera assignment and clarifies that the event data is fictional.
 
+## AI-Assisted Development Process
+
+An AI coding assistant was used as a development aid throughout this project. The assistant helped generate initial component structures, suggest implementation approaches, inspect compiler errors, and document the project. The application requirements and final decisions remained under the developer's direction.
+
+The collaboration followed an iterative workflow:
+
+1. Describe one feature or issue at a time, such as event cards, data binding, navigation, validation, session state, or attendance tracking.
+2. Inspect the existing files and identify the component, model, service, or stylesheet responsible for the behavior.
+3. Apply a focused change that followed the existing Blazor project structure.
+4. Run `dotnet build --no-restore` after changes to detect Razor, C#, and routing errors.
+5. Review the result in the browser and report any unexpected behavior, such as stale routes, incorrect event IDs, layout spacing, or session state replacement.
+6. Refine the implementation and repeat the verification cycle.
+
+Examples of issues resolved during this process include:
+
+- Fixing `Virtualize` generic type inference by specifying `TItem` and using a compatible collection.
+- Removing a catch-all route that prevented invalid registration URLs from reaching the not-found view.
+- Replacing a single mutable current-user value with a collection of registrations so multiple users could register for different events in one session.
+- Moving page-level CSS into the global stylesheet and adjusting the event grid for responsive square cards.
+- Adding a GitHub Pages workflow with the repository base path and SPA fallback configuration.
+
+AI-generated suggestions were reviewed against the actual project files, compiled locally, and adjusted when the first implementation did not match the application's behavior. The assistant was used for code generation and troubleshooting, while the developer tested the application, selected the requirements, and accepted the final changes.
+
 ## Run Locally
 
 From the project directory:
